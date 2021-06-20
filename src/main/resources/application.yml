@@ -1,1 +1,25 @@
-
+spring:
+  cloud:
+    stream:
+      bindings:
+        invoice-input-channel:
+          destination: avro-pos-topic
+        notification-output-channel:
+          destination: loyalty-topic
+        employee-input-channel:
+          destination: employees-topic
+      kafka:
+        streams:
+          binder:
+            brokers: localhost:9092
+            configuration:
+              schema.registry.url: http://localhost:8081
+              commit.interval.ms: 10000
+              state.dir: state-store
+              # The good practice is to define default serde for app. And another good practice is to use the single
+              # serde format for all output and input channel
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value:
+                  serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
